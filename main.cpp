@@ -24,7 +24,7 @@ int main(int argc, char *argv[])
     }
     else if (argc == 5 && !strcmp(argv[1], "-s"))
         appendToARPTable(&table, argv[2], argv[3], argv[4]);
-    else std::cout << "Error: unknown command." << std::endl;
+    else std::cerr << "Error: unknown command." << std::endl;
 
     return 0;
 }
