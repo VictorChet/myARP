@@ -5,7 +5,7 @@ std::vector<IPHelper::TableARPRow> getTable()
 {
     unsigned long bufferSize = 0;
 
-    int errorCode;
+    unsigned long errorCode;
     if ((errorCode = GetIpNetTable(nullptr, &bufferSize, true)) != ERROR_INSUFFICIENT_BUFFER)
         throw IPHelper::TableARP::GetTableError(errorCode);
 
@@ -52,12 +52,12 @@ void IPHelper::TableARP::append(const IPHelper::TableARPRow &row)
     buffer.dwPhysAddrLen = row.isMACAddressExsists ? row.addressMAC.size() : 0;
 
     if (row.isMACAddressExsists)
-        for (int i = 0; i < row.addressMAC.size(); i++)
+        for (unsigned i = 0; i < row.addressMAC.size(); i++)
             buffer.bPhysAddr[i] = row.addressMAC[i];
 
     buffer.dwType = row.type;
 
-    int errorCode;
+    unsigned long errorCode;
     if ((errorCode = CreateIpNetEntry(&buffer)) != NO_ERROR) throw AppendError(errorCode);
 
     this->update();
@@ -70,7 +70,7 @@ void IPHelper::TableARP::remove(unsigned long index, const IPHelper::AddressIP &
     buffer.dwIndex = index;
     buffer.dwAddr = address.toUlong();
 
-    int errorCode;
+    unsigned long errorCode;
     if ((errorCode = DeleteIpNetEntry(&buffer)) != NO_ERROR) throw RemoveError(errorCode);
 
     this->update();
@@ -81,14 +81,14 @@ IPHelper::AddressMAC IPHelper::TableARP::getMACByIP(const IPHelper::AddressIP &i
     unsigned long bufferSize = 8;
     unsigned char buffer[8];
 
-    int errorCode;
+    unsigned long errorCode;
     if ((errorCode = SendARP(ip.toUlong(), 0, buffer, &bufferSize)) != NO_ERROR)
         throw GetMACByIPError(errorCode);
 
     return AddressMAC(buffer);
 }
 
-IPHelper::TableARPRow IPHelper::TableARP::operator [](int i) const
+IPHelper::TableARPRow IPHelper::TableARP::operator [](unsigned i) const
 {
     return this->table[i];
 }
@@ -109,7 +109,7 @@ size_t IPHelper::TableARP::size() const
     return this->table.size();
 }
 
-IPHelper::TableARP::GetTableError::GetTableError(int newErrorCode) : errorCode(newErrorCode) {}
+IPHelper::TableARP::GetTableError::GetTableError(unsigned long newErrorCode) : errorCode(newErrorCode) {}
 
 const char *IPHelper::TableARP::GetTableError::what() const noexcept
 {
@@ -117,13 +117,10 @@ const char *IPHelper::TableARP::GetTableError::what() const noexcept
 
     case ERROR_INSUFFICIENT_BUFFER:
         return "IP Helper: cannot get ARP table. Buffer is not large enough.";
-        break;
     case ERROR_INVALID_PARAMETER:
         return "IP Helper: cannot get ARP table. Invalid parameter.";
-        break;
     case ERROR_NO_DATA:
         return "IP Helper: cannot get ARP table. ARP table is empty.";
-        break;
     case ERROR_NOT_SUPPORTED:
         return "IP Helper: cannot get ARP table. The IPv4 transport is not configured on the local computer.";
     default:
@@ -134,7 +131,7 @@ const char *IPHelper::TableARP::GetTableError::what() const noexcept
 
 
 
-IPHelper::TableARP::AppendError::AppendError(int newErrorCode) : errorCode(newErrorCode) {}
+IPHelper::TableARP::AppendError::AppendError(unsigned long newErrorCode) : errorCode(newErrorCode) {}
 
 const char *IPHelper::TableARP::AppendError::what() const noexcept
 {
@@ -142,20 +139,17 @@ const char *IPHelper::TableARP::AppendError::what() const noexcept
 
     case ERROR_ACCESS_DENIED:
         return "IP Helper: cannot append row to ARP table. Access is denied.";
-        break;
     case ERROR_INVALID_PARAMETER:
         return "IP Helper: cannot append row to ARP table. Invalid parameter.";
-        break;
     case ERROR_NOT_SUPPORTED:
         return "IP Helper: cannot append row to ARP table. The IPv4 transport is not configured on the local computer.";
-        break;
     default:
         return "IP Helper: cannot append row to ARP table.";
 
     }
 }
 
-IPHelper::TableARP::RemoveError::RemoveError(int newErrorCode) : errorCode(newErrorCode) {}
+IPHelper::TableARP::RemoveError::RemoveError(unsigned long newErrorCode) : errorCode(newErrorCode) {}
 
 const char *IPHelper::TableARP::RemoveError::what() const noexcept
 {
@@ -163,20 +157,17 @@ const char *IPHelper::TableARP::RemoveError::what() const noexcept
 
     case ERROR_ACCESS_DENIED:
         return "IP Helper: cannot remove row from ARP table. Access is denied.";
-        break;
     case ERROR_INVALID_PARAMETER:
         return "IP Helper: cannot remove row from ARP table. Invalid parameter.";
-        break;
     case ERROR_NOT_SUPPORTED:
         return "IP Helper: cannot remove row from ARP table. The IPv4 transport is not configured on the local computer.";
-        break;
     default:
         return "IP Helper: cannot remove row from ARP table.";
 
     }
 }
 
-IPHelper::TableARP::GetMACByIPError::GetMACByIPError(int newErrorCode) : errorCode(newErrorCode) {}
+IPHelper::TableARP::GetMACByIPError::GetMACByIPError(unsigned long newErrorCode) : errorCode(newErrorCode) {}
 
 const char *IPHelper::TableARP::GetMACByIPError::what() const noexcept
 {
@@ -184,25 +175,18 @@ const char *IPHelper::TableARP::GetMACByIPError::what() const noexcept
 
     case ERROR_BAD_NET_NAME:
         return "IP Helper: cannot find MAC by IP. The network name cannot be found.";
-        break;
     case ERROR_BUFFER_OVERFLOW:
         return "IP Helper: cannot find MAC by IP. Buffer overflow.";
-        break;
     case ERROR_GEN_FAILURE:
         return "IP Helper: cannot find MAC by IP. A device attached to the system is not functioning.";
-        break;
     case ERROR_INVALID_PARAMETER:
         return "IP Helper: cannot find MAC by IP. Invalid parameter.";
-        break;
     case ERROR_INVALID_USER_BUFFER:
         return "IP Helper: cannot find MAC by IP. The supplied user buffer is not valid for the requested operation.";
-        break;
     case ERROR_NOT_FOUND:
         return "IP Helper: cannot find MAC by IP. MAC not found.";
-        break;
     case ERROR_NOT_SUPPORTED:
         return "IP Helper: cannot find MAC by IP. The IPv4 transport is not configured on the local computer.";
-        break;
     default:
         return "IP Helper: cannot find MAC by IP.";
 

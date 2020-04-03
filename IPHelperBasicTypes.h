@@ -15,9 +15,9 @@ public:
     AddressIP(unsigned long ulongIP);
     std::string toStdString() const;
     unsigned long toUlong() const;
-    short size() const;
-    unsigned char &operator [] (int i);
-    unsigned char operator [] (int i) const;
+    unsigned short size() const;
+    unsigned char &operator [] (unsigned i);
+    unsigned char operator [] (unsigned i) const;
 
     class GetFromStringError : public std::exception {
     public:
@@ -34,9 +34,9 @@ public:
     AddressMAC();
     AddressMAC(const std::vector<unsigned char> &vectorMAC);
     AddressMAC(const unsigned char *cArrayMAC);
-    short size() const;
-    unsigned char &operator [] (int i);
-    unsigned char operator [] (int i) const;
+    unsigned short size() const;
+    unsigned char &operator [] (unsigned i);
+    unsigned char operator [] (unsigned i) const;
 };
 
 }

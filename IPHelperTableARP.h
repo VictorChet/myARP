@@ -21,35 +21,35 @@ public:
     void append(const TableARPRow &row);
     void remove(unsigned long index, const AddressIP &address);
     AddressMAC getMACByIP(const AddressIP &ip);
-    TableARPRow operator [] (int i) const;
+    TableARPRow operator [] (unsigned i) const;
     void update();
     size_t size() const;
 
     class GetTableError : public std::exception {
-        int errorCode;
+        unsigned long errorCode;
     public:
-        GetTableError(int newErrorCode);
+        GetTableError(unsigned long newErrorCode);
         const char *what() const noexcept override;
     };
 
     class AppendError : public std::exception {
-        int errorCode;
+        unsigned long errorCode;
     public:
-        AppendError(int newErrorCode);
+        AppendError(unsigned long newErrorCode);
         const char * what() const noexcept override;
     };
 
     class RemoveError : public std::exception {
-        int errorCode;
+        unsigned long errorCode;
     public:
-        RemoveError(int newErrorCode);
+        RemoveError(unsigned long newErrorCode);
         const char *what() const noexcept override;
     };
 
     class GetMACByIPError : public std::exception {
-        int errorCode;
+        unsigned long errorCode;
     public:
-        GetMACByIPError(int newErrorCode);
+        GetMACByIPError(unsigned long newErrorCode);
         const char *what() const noexcept override;
     };
 };

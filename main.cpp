@@ -24,7 +24,7 @@ int main(int argc, char *argv[])
     }
     else if (argc == 5 && !strcmp(argv[1], "-s"))
         appendToARPTable(&table, argv[2], argv[3], argv[4]);
-    else std::cout << "Error: unknown command." << std::endl;
+    else std::cerr << "Error: unknown command." << std::endl;
 
     return 0;
 }
@@ -61,7 +61,7 @@ void outputARPTable(const IPHelper::TableARP &table)
     std::cout << "Interface: 0x" << std::hex << index << std::endl;
     std::cout << "  Address in Internet     Physical address      Type" << std::endl;
 
-    for (unsigned long i = 0; i < table.size(); i++) {
+    for (unsigned i = 0; i < table.size(); i++) {
         if (table[i].index != index) {
             index = table[i].index;
             std::cout << "Interface: 0x" << std::hex << index << std::endl;
@@ -91,7 +91,7 @@ void outputMAC(const IPHelper::AddressMAC &address)
     if (address[0] < 0x10) std::cout << '0';
     std::cout << std::hex << int(address[0]);
 
-    for (short i = 1; i < address.size(); i++) {
+    for (unsigned i = 1; i < address.size(); i++) {
         std::cout << '-';
         if (address[i] < 0x10) std::cout << '0';
         std::cout << std::hex << int(address[i]);
@@ -157,10 +157,10 @@ IPHelper::AddressMAC getMACFromCStr(const char *str)
     IPHelper::AddressMAC address;
     int j = 0;
 
-    for (int i = 0; i < address.size(); i++) {
+    for (unsigned i = 0; i < address.size(); i++) {
         std::string byteMAC = "0x";
         for (; str[j] && str[j] != '-'; j++) byteMAC += str[j];
-        address[i] = strtoul(byteMAC.c_str(), nullptr, 16);
+        address[i] = static_cast<unsigned char>(strtoul(byteMAC.c_str(), nullptr, 16));
         j++;
     }
 
